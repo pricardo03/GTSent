@@ -1,2 +1,3 @@
-# GT Try Sentiment code 
-Test
+# GT Sentiment code practices
+Practica para analisis de sentimientos con R
+

@@ -1,11 +1,15 @@
 ---
 title: "Sentimental II"
-author: "Ricardo Estrada"
+author: "Ricardo Estrada Rdez"
 date: "November 4, 2015"
 output: html_document
 ---
+   
+>Librerias:
 
-```{r echo=FALSE}
+Para realizar el análisis de sentimientos serán requeridas las siguientes librerías: 
+   
+```{r echo=FALSE, warning=FALSE}
 
 #import libraries to work with
 if(!require(plyr)){install.packages("plyr")};
@@ -17,20 +21,41 @@ require(xlsx);
 require(plyr);
 require(stringr);
 require(e1071);
+```
 
+```{r echo=FALSE, message=FALSE, prompt=TRUE}
 acentos <- "áéíóúñ1234567890"; noAcentos <- "aeioun##########";
 
 #Directorio donde estan los textos
-  workDir = "C:\\Users\\Rikhardo\\Documents\\Trabajos Extra\\Sentiment Analysis Guatemala Bank\\Files Recived";
+  DirTrabajo = "C:\\Users\\Rikhardo\\Documents\\Trabajos Extra\\Sentiment Analysis Guatemala Bank\\Files Recived";
+```
+
+>Directorio de Trabajo:
+
+Los archivos correspondientes a información deberán ser almacenados en la dirección referenciada por la variable **DirTrabajo** que puede contener subcarpetas para la organización de la documentación
+      El valor actual de dicha carpeta es: **{`r DirTrabajo`}** para efectos de desarrollo.
+      
+
+   >Manejo del Idioma:
+
+Por tratarse del idioma español cuyo lenguaje posee diferentes caracteres especiales como las tildes, virgulillas y diéresis es necesario llevar los caracteres a un nivel más estándar y reemplazar los acentos antes de poder realizar comparaciones, para lo cual he utilizado las variables que se muestran en la siguiente tabla con sus valores correspondientes.
+
+   Nombre Variables  | Valores
+   ------------ | ------------
+   acentos  | `r acentos`
+   noAcentos   | `r noAcentos`
+
+```{r echo=TRUE, collapse=TRUE}
 
 #Carga de Files
-  CommentsFile <- read.csv(paste(workDir, "\\TDP_PTM_Comentarios.Polarizados.csv", sep=""), head=TRUE, sep=",", stringsAsFactors=FALSE);
-  regDisp <- read.xlsx2(paste(workDir, "\\Reglas\\Reglas Estandar Disponibilidad.xls", sep=""), sheetName="Disponibilidad");
+  CommentsFile <- read.csv(paste(DirTrabajo, "\\TDP_PTM_Comentarios.Polarizados.csv", sep=""), head=TRUE, sep=",", stringsAsFactors=FALSE);
+  regDisp <- read.xlsx2(paste(DirTrabajo, "\\Reglas\\Reglas Estandar Disponibilidad.xls", sep=""), sheetName="Disponibilidad");
   
 #Disponibilidad
   regDisp <- regDisp[, c(1, 3)];
   names(regDisp) <- c("Prefijo", "frase");
   regDisp$polNeg <- paste(regDisp$Prefijo, regDisp$frase, sep = " ")
+  
 #Elimino acentos
   regDisp$polNeg <- chartr(acentos, noAcentos, tolower(regDisp[, "polNeg"]));
 
@@ -40,9 +65,7 @@ acentos <- "áéíóúñ1234567890"; noAcentos <- "aeioun##########";
   CommentsFile$NewComments <- chartr(acentos, noAcentos, tolower(CommentsFile[, "Comentarios"])); #Elimino acentos
   CommentsFile$NewPol <- NA #Valores en blanco para iniciar la polarizacion
   
-  
-  CommentsFile$NewPolaridad <- ifelse()
-
+  #CommentsFile$NewPolaridad <- ifelse()
 
 ```
 
