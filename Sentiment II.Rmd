@@ -1,13 +1,15 @@
 ---
-title: "Sentimental II"
+title: "Sentiment Analysis GTBank"
 author: "Ricardo Estrada Rdez"
 date: "November 4, 2015"
 output: html_document
+fontsize: 11pt
 ---
-   
+
 >Librerias:
 
-Para realizar el análisis de sentimientos serán requeridas las siguientes librerías: 
+   Para realizar el análisis de sentimientos serán requeridas las siguientes librerías: 
+
    
 ```{r echo=FALSE, warning=FALSE}
 
@@ -30,22 +32,26 @@ acentos <- "áéíóúñ1234567890"; noAcentos <- "aeioun##########";
   DirTrabajo = "C:\\Users\\Rikhardo\\Documents\\Trabajos Extra\\Sentiment Analysis Guatemala Bank\\Files Recived";
 ```
 
->Directorio de Trabajo:
 
-Los archivos correspondientes a información deberán ser almacenados en la dirección referenciada por la variable **DirTrabajo** que puede contener subcarpetas para la organización de la documentación
-      El valor actual de dicha carpeta es: **{`r DirTrabajo`}** para efectos de desarrollo.
+>Directorio de trabajo:
+
+   Los archivos correspondientes a información deberán ser almacenados en la dirección referenciada por la variable **DirTrabajo** que puede contener subcarpetas para la organización de la documentación
+   El valor actual de dicha carpeta es: **{`r DirTrabajo`}** para efectos de desarrollo.
       
 
-   >Manejo del Idioma:
+   >Manejo del idioma:
 
-Por tratarse del idioma español cuyo lenguaje posee diferentes caracteres especiales como las tildes, virgulillas y diéresis es necesario llevar los caracteres a un nivel más estándar y reemplazar los acentos antes de poder realizar comparaciones, para lo cual he utilizado las variables que se muestran en la siguiente tabla con sus valores correspondientes.
+   Por tratarse del idioma español cuyo lenguaje posee diferentes caracteres especiales como las tildes, virgulillas y diéresis es necesario llevar los caracteres a un nivel más estándar y reemplazar los acentos antes de poder realizar comparaciones, para lo cual he utilizado las variables que se muestran en la siguiente tabla con sus valores correspondientes.
 
    Nombre Variables  | Valores
    ------------ | ------------
    acentos  | `r acentos`
    noAcentos   | `r noAcentos`
 
-```{r echo=TRUE, collapse=TRUE}
+   Dado que los mensajes podrían contener números reemplazamos dichos valores por el signo {#} para realizar la estandarización, si es requerido su uso posterior se reemplazara con el valor original.
+
+
+```{r echo=TRUE}
 
 #Carga de Files
   CommentsFile <- read.csv(paste(DirTrabajo, "\\TDP_PTM_Comentarios.Polarizados.csv", sep=""), head=TRUE, sep=",", stringsAsFactors=FALSE);
@@ -54,18 +60,18 @@ Por tratarse del idioma español cuyo lenguaje posee diferentes caracteres especi
 #Disponibilidad
   regDisp <- regDisp[, c(1, 3)];
   names(regDisp) <- c("Prefijo", "frase");
-  regDisp$polNeg <- paste(regDisp$Prefijo, regDisp$frase, sep = " ")
-  
-#Elimino acentos
-  regDisp$polNeg <- chartr(acentos, noAcentos, tolower(regDisp[, "polNeg"]));
+  regDisp$polNeg <- paste(regDisp$Prefijo, regDisp$frase, sep = " ");
+  regDisp$polNeg <- chartr(acentos, noAcentos, trimws(tolower(regDisp[, "polNeg"]))); #Elimino acentos
 
 #Cargo las encuestas #el formato csv da mejores resultdos
-  CommentsFile <- CommentsFile[ 1:3, c(1, 6, 13:15)]; #Elimino columnas innecesarias ******* RECORDAR QUITAR EL FILTRO DE CANT ROWS *******
+  CommentsFile <- CommentsFile[, c(1, 6, 13:15)]; #Elimino columnas innecesarias ******* RECORDAR QUITAR EL FILTRO DE CANT ROWS *******
   names(CommentsFile) <- c("Fecha", "Area", "NumeroCaso", "Polaridad", "Comentarios");
   CommentsFile$NewComments <- chartr(acentos, noAcentos, tolower(CommentsFile[, "Comentarios"])); #Elimino acentos
-  CommentsFile$NewPol <- NA #Valores en blanco para iniciar la polarizacion
+  CommentsFile$NewPol <- as.character(NA) #Valores en blanco para iniciar la polarizacion
   
-  #CommentsFile$NewPolaridad <- ifelse()
+#Buscando la coincidencias de de las frases
+  #CommentsFile$NewPols <- 
+     ifelse(as.numeric(agrep(regDisp[4, "polNeg"], CommentsFile[, "NewComments"], ignore.case = TRUE))>0, "Negativo", NA)
 
 ```
 
